@@ -109,6 +109,22 @@ class PersistentCollectionCriteriaTest extends \Doctrine\Tests\OrmFunctionalTest
         $this->assertFalse($tweets->isInitialized());
     }
 
+    public function testEmpty()
+    {
+        $this->loadTweetFixture();
+
+        $repository = $this->_em->getRepository('Doctrine\Tests\Models\Tweet\User');
+
+        $user   = $repository->findOneBy(array('name' => 'ngal'));
+        $criteria = new Criteria(
+            Criteria::expr()->notIn('content', array())
+        );
+        $this->assertEquals(2, count($user->tweets));
+        $tweets = $user->tweets->matching($criteria);
+        $this->assertEquals(2, count($tweets));
+
+    }
+
     /*public function testCanCountWithoutLoadingManyToManyPersistentCollection()
     {
         $this->loadQuoteFixture();
